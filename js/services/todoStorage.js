@@ -48,19 +48,6 @@ angular.module('todomvc')
 					});
 			},
 
-			clearAll: function () {
-				var originalTodos = store.todos.slice(0);
-
-				var incompleteTodos = store.todos;
-
-				angular.copy(incompleteTodos, store.todos);
-
-				return store.api.delete(function () {
-					}, function error() {
-						angular.copy(originalTodos, store.todos);
-					});
-			},
-
 			delete: function (todo) {
 				var originalTodos = store.todos.slice(0);
 
