@@ -15,7 +15,7 @@ angular.module('todomvc')
 		$scope.editedTodo = null;
 
 		$scope.$watch('todos', function () {
-			$scope.remainingCount = $filter('filter')(todos, { completed: false }).length;
+			$scope.remainingCount = $filter('filter')($scope.todos, { completed: false }).length;
 			$scope.allChecked = !$scope.remainingCount;
 		}, true);
 
@@ -34,6 +34,18 @@ angular.module('todomvc')
 			};
 
 			if (!newTodo.title) {
+				return;
+			}
+
+			if (newTodo.title.length < 5) {
+				return;
+			}
+
+			var [existingTodo] = $scope.todos.filter((todo) => todo.title === newTodo.title);
+			if (existingTodo) {
+				existingTodo.completed = false
+				store.put(existingTodo, $scope.todos.indexOf(existingTodo));
+				$scope.newTodo = '';
 				return;
 			}
 
@@ -112,6 +124,12 @@ angular.module('todomvc')
 
 		$scope.clearCompletedTodos = function () {
 			store.clearCompleted();
+		};
+
+		$scope.clearAllTodos = function () {
+			store.clearAll().then(function (todos) {
+				todos = $scope.todos =  todos;
+			});
 		};
 
 		$scope.markAll = function (completed) {

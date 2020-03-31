@@ -48,6 +48,19 @@ angular.module('todomvc')
 					});
 			},
 
+			clearAll: function () {
+				var originalTodos = store.todos.slice(0);
+
+				var incompleteTodos = store.todos;
+
+				angular.copy(incompleteTodos, store.todos);
+
+				return store.api.delete(function () {
+					}, function error() {
+						angular.copy(originalTodos, store.todos);
+					});
+			},
+
 			delete: function (todo) {
 				var originalTodos = store.todos.slice(0);
 
@@ -112,6 +125,17 @@ angular.module('todomvc')
 
 				angular.copy(incompleteTodos, store.todos);
 
+				store._saveToLocalStorage(store.todos);
+				deferred.resolve(store.todos);
+
+				return deferred.promise;
+			},
+
+			clearAll: function () {
+
+				var deferred = $q.defer();
+
+				store.todos = [];
 				store._saveToLocalStorage(store.todos);
 				deferred.resolve(store.todos);
 
